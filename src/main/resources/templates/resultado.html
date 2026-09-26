@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        
+        <title>Resultado</title>
+        <link rel="stylesheet" href="/css/styles.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="contenedor">
+        
+        <h1> Credito guardado correctamente </h1>
+        
+        <P> 
+            <strong>
+                ID:
+            </strong>
+            <span th:Text="${credito.id}"></span>
+        </P>   
+        
+         <p>
+        <strong>Moneda:</strong>
+        <span th:text="${credito.moneda}"></span>
+    </p>
+
+    <p>
+        <strong>Monto:</strong>
+        <span th:text="${credito.monto}"></span>
+    </p>
+
+    <p>
+        <strong>Periodo:</strong>
+        <span th:text="${credito.periodo}"></span> meses
+    </p>
+
+    <p>
+        <strong>Cuota:</strong>
+        <span th:text="${credito.cuota}"></span>
+    </p>
+
+    <p>
+        <strong>TEA:</strong>
+        <span th:text="${credito.tea}"></span> %
+    </p>
+
+    <p>
+        <strong>Fecha de vencimiento:</strong>
+        <span th:text="${credito.fechaVencimiento}"></span>
+    </p>
+
+    <br>
+
+    <a th:href="@{/}">Registrar otro crédito</a>
+        
+        
+        
+        </div>
+    </body>
+</html>
