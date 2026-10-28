@@ -1,53 +1,198 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Indicamos que utilizaremos Thymeleaf con Spring Boot. -->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Financiera</title>
-    <link rel="stylesheet" href="/css/styles.css">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Financiera - Pagos de tarjetas</title>
+
+    <!-- Cargamos los estilos del proyecto original. -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
-    <div class ="contenedor">
-        
-    <h1>Financiera</h1>
 
-    <form th:action="@{/guardar}" th:object="${credito}" method="post">
+    <!-- Contenedor principal de la pagina. -->
+    <div class="contenedor">
 
-        <label>Fecha:</label>
-        <input type="date" th:field="*{fecha}" required>
-        <br><br>
+        <h1>Financiera</h1>
 
-        <label>Moneda:</label>
-        <select th:field="*{moneda}" required>
-            <option value="">Seleccione</option>
-            <option value="Pesos">Pesos</option>
-            <option value="Dólares">Dólares</option>
-        </select>
-        <br><br>
+        <h2>Registro de credito y pagos</h2>
 
-        <label>Monto:</label>
-        <input type="number" step="0.01" th:field="*{monto}" required>
-        <br><br>
+        <!-- Mostramos un mensaje si ocurre un error. -->
+        <p th:if="${error != null}"
+           th:text="${error}"
+           style="color: red;">
+        </p>
 
-        <label>Periodo (meses):</label>
-        <input type="number" th:field="*{periodo}" required>
-        <br><br>
+        <!--
+        El formulario envia la informacion al controlador
+        mediante una peticion POST a la ruta /guardar.
+        -->
+        <form th:action="@{/guardar}"
+              th:object="${credito}"
+              method="post">
 
-        <label>Cuota:</label>
-        <input type="number" step="0.01" th:field="*{cuota}" required>
-        <br><br>
+            <!-- Datos originales de la Tarea 2. -->
 
-        <label>TEA (%):</label>
-        <input type="number" step="0.01" th:field="*{tea}" required>
-        <br><br>
+            <label>Fecha:</label>
+            <input type="date"
+                   th:field="*{fecha}"
+                   required>
 
-        <label>Fecha de vencimiento:</label>
-        <input type="date" th:field="*{fechaVencimiento}" required>
-        <br><br>
+            <label>Moneda:</label>
+            <select th:field="*{moneda}" required>
+                <option value="">Seleccione</option>
+                <option value="Pesos">Pesos</option>
+                <option value="Dólares">Dólares</option>
+            </select>
 
-        <button type="submit">Guardar</button>
+            <label>Monto:</label>
+            <input type="number"
+                   step="0.01"
+                   min="0"
+                   th:field="*{monto}"
+                   required>
 
-    </form>
+            <label>Periodo (meses):</label>
+            <input type="number"
+                   min="1"
+                   th:field="*{periodo}"
+                   required>
+
+            <label>Cuota:</label>
+            <input type="number"
+                   step="0.01"
+                   min="0"
+                   th:field="*{cuota}"
+                   required>
+
+            <label>TEA (%):</label>
+            <input type="number"
+                   step="0.01"
+                   min="0"
+                   th:field="*{tea}"
+                   required>
+
+            <label>Fecha de vencimiento:</label>
+            <input type="date"
+                   th:field="*{fechaVencimiento}"
+                   required>
+
+            <hr>
+
+            <!--
+            NUEVA SECCION DE LA TAREA 3.
+            Mostraremos los movimientos de tarjetas
+            recuperados desde la base de datos.
+            -->
+
+            <h2>Tabla de pagos de tarjetas de credito</h2>
+
+            <p>
+                Capture los pagos correspondientes
+                a cada movimiento.
+            </p>
+
+            <!--
+            Este contenedor permite desplazar la tabla
+            horizontalmente si la pantalla es pequena.
+            -->
+            <div style="overflow-x: auto;">
+
+                <table border="1"
+                       cellpadding="8"
+                       cellspacing="0"
+                       style="width: 100%; border-collapse: collapse;">
+
+                    <!-- Encabezados de la tabla. -->
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Mes</th>
+                            <th>Tarjeta</th>
+                            <th>Transaccion</th>
+                            <th>Gastos</th>
+                            <th>Pagos</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!--
+                        th:each recorre los movimientos
+                        enviados por CreditoController.
+                        Genera una fila por cada movimiento.
+                        -->
+                        <tr th:each="movimiento : ${movimientos}">
+
+                            <!--
+                            Estas cinco columnas no son editables.
+                            Solo mostramos los datos de MySQL.
+                            -->
+
+                            <td th:text="${movimiento.fecha}">
+                            </td>
+
+                            <td th:text="${movimiento.mes}">
+                            </td>
+
+                            <td th:text="${movimiento.tarjeta}">
+                            </td>
+
+                            <td th:text="${movimiento.transaccion}">
+                            </td>
+
+                            <td th:text="${movimiento.gastos}">
+                            </td>
+
+                            <!--
+                            La columna Pagos es editable.
+                            Cada campo utiliza el ID del movimiento
+                            para identificar a que fila pertenece.
+                            -->
+                            <td>
+                                <input type="number"
+                                       min="0"
+                                       step="0.01"
+                                       th:name="|pagos[${movimiento.id}]|"
+                                       th:value="${movimiento.pagos}"
+                                       style="width: 95px;"
+                                       required>
+                            </td>
+
+                        </tr>
+
+                        <!-- Mensaje cuando no existen registros. -->
+                        <tr th:if="${#lists.isEmpty(movimientos)}">
+                            <td colspan="6">
+                                No existen movimientos registrados.
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!--
+            Al presionar el boton, enviamos los datos
+            del credito y los pagos al controlador.
+            -->
+            <button type="submit">
+                Aceptar y guardar
+            </button>
+
+        </form>
+
     </div>
+
 </body>
 </html>

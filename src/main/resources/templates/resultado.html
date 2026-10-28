@@ -1,64 +1,180 @@
+
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        
-        <title>Resultado</title>
-        <link rel="stylesheet" href="/css/styles.css">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div class="contenedor">
-        
-        <h1> Credito guardado correctamente </h1>
-        
-        <P> 
-            <strong>
-                ID:
-            </strong>
-            <span th:Text="${credito.id}"></span>
-        </P>   
-        
-         <p>
-        <strong>Moneda:</strong>
-        <span th:text="${credito.moneda}"></span>
-    </p>
 
-    <p>
-        <strong>Monto:</strong>
-        <span th:text="${credito.monto}"></span>
-    </p>
+<!-- Indicamos que utilizaremos Thymeleaf con Spring Boot. -->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-    <p>
-        <strong>Periodo:</strong>
-        <span th:text="${credito.periodo}"></span> meses
-    </p>
+<head>
+    <meta charset="UTF-8">
 
-    <p>
-        <strong>Cuota:</strong>
-        <span th:text="${credito.cuota}"></span>
-    </p>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <p>
-        <strong>TEA:</strong>
-        <span th:text="${credito.tea}"></span> %
-    </p>
+    <title>Resultado - Financiera</title>
 
-    <p>
-        <strong>Fecha de vencimiento:</strong>
-        <span th:text="${credito.fechaVencimiento}"></span>
-    </p>
+    <!-- Cargamos los estilos de nuestro proyecto. -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
 
-    <br>
+<body>
 
-    <a th:href="@{/}">Registrar otro crédito</a>
-        
-        
-        
+    <!-- Contenedor principal de la pagina. -->
+    <div class="contenedor">
+
+        <h1>Credito guardado correctamente</h1>
+
+        <!--
+        Mostramos la informacion que recibimos
+        del controlador despues de guardar el credito.
+        -->
+
+        <h2>Datos del credito</h2>
+
+        <!-- Mostramos el identificador del credito. -->
+        <p>
+            <strong>ID:</strong>
+            <span th:text="${credito.id}"></span>
+        </p>
+
+        <!-- Mostramos la fecha del credito. -->
+        <p>
+            <strong>Fecha:</strong>
+            <span th:text="${credito.fecha}"></span>
+        </p>
+
+        <!-- Mostramos el tipo de moneda. -->
+        <p>
+            <strong>Moneda:</strong>
+            <span th:text="${credito.moneda}"></span>
+        </p>
+
+        <!-- Mostramos el monto del credito. -->
+        <p>
+            <strong>Monto:</strong>
+            <span th:text="${credito.monto}"></span>
+        </p>
+
+        <!-- Mostramos el periodo establecido. -->
+        <p>
+            <strong>Periodo:</strong>
+            <span th:text="${credito.periodo}"></span>
+            meses
+        </p>
+
+        <!-- Mostramos la cuota del credito. -->
+        <p>
+            <strong>Cuota:</strong>
+            <span th:text="${credito.cuota}"></span>
+        </p>
+
+        <!-- Mostramos la tasa efectiva anual. -->
+        <p>
+            <strong>TEA:</strong>
+            <span th:text="${credito.tea}"></span>
+            %
+        </p>
+
+        <!-- Mostramos la fecha de vencimiento. -->
+        <p>
+            <strong>Fecha de vencimiento:</strong>
+            <span th:text="${credito.fechaVencimiento}"></span>
+        </p>
+
+        <hr>
+
+        <!--
+        NUEVA SECCION DE LA TAREA 3.
+        Mostramos los movimientos y pagos que
+        fueron almacenados en la base de datos.
+        -->
+
+        <h2>Pagos de tarjetas de credito</h2>
+
+        <p>
+            Los siguientes movimientos fueron
+            registrados correctamente.
+        </p>
+
+        <!-- Permitimos desplazar la tabla horizontalmente. -->
+        <div style="overflow-x: auto;">
+
+            <table border="1"
+                   cellpadding="8"
+                   cellspacing="0"
+                   style="width: 100%; border-collapse: collapse;">
+
+                <!-- Encabezados de la tabla. -->
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Mes</th>
+                        <th>Tarjeta</th>
+                        <th>Transaccion</th>
+                        <th>Gastos</th>
+                        <th>Pagos</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <!--
+                    Recorremos los movimientos guardados.
+                    Cada movimiento genera una fila.
+                    -->
+                    <tr th:each="movimiento : ${movimientos}">
+
+                        <!-- Fecha registrada. -->
+                        <td th:text="${movimiento.fecha}">
+                        </td>
+
+                        <!-- Mes correspondiente. -->
+                        <td th:text="${movimiento.mes}">
+                        </td>
+
+                        <!-- Nombre de la tarjeta. -->
+                        <td th:text="${movimiento.tarjeta}">
+                        </td>
+
+                        <!-- Descripcion de la transaccion. -->
+                        <td th:text="${movimiento.transaccion}">
+                        </td>
+
+                        <!-- Cantidad gastada. -->
+                        <td th:text="${movimiento.gastos}">
+                        </td>
+
+                        <!--
+                        Mostramos el pago guardado en MySQL.
+                        Aqui ya no utilizamos input porque
+                        los datos son de solo lectura.
+                        -->
+                        <td th:text="${movimiento.pagos}">
+                        </td>
+
+                    </tr>
+
+                    <!-- Mensaje si no hay movimientos. -->
+                    <tr th:if="${#lists.isEmpty(movimientos)}">
+                        <td colspan="6">
+                            No se encontraron pagos registrados.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
-    </body>
+
+        <!--
+        Este enlace permite regresar al formulario
+        para registrar otro credito y sus pagos.
+        -->
+        <a th:href="@{/}">
+            Registrar otro credito
+        </a>
+
+    </div>
+
+</body>
 </html>

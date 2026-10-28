@@ -71,13 +71,23 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+	
+<!-- Configuracion para ejecutar nuestra aplicacion Spring Boot. -->
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+
+            <!-- Indicamos la clase principal del proyecto. -->
+            <configuration>
+                <mainClass>
+                    com.tarea.financiera.FinancieraApplication
+                </mainClass>
+            </configuration>
+
+        </plugin>
+    </plugins>
+</build>
 
 </project>
